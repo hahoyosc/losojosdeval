@@ -1,0 +1,66 @@
+<section
+  class="min-h-screen py-24 md:py-0 flex flex-col items-center justify-center bg-[#8C4653] text-white px-8"
+>
+  <div class="opacity-0 rsvp-img mb-12">
+    <img
+      src="/images/622088c5-179b-4191-82cf-becd915b4936.png"
+      alt="Confirmación"
+      class="w-full h-auto md:h-96 object-cover rounded-lg shadow-lg"
+    />
+  </div>
+  <div class="text-center max-w-md w-full opacity-0 rsvp-form">
+    <h2 class="text-3xl mb-4">
+      Y por último, pero no por eso menos importante
+    </h2>
+    <h1 class="text-4xl font-bold mb-4">¡Confirma tu asistencia!</h1>
+    <p class="text-xl mb-8">
+      Ingresa tu nombre para confirmar que asistirás a esta gran celebración 🎉
+    </p>
+    <form>
+      <div class="mb-4 relative">
+        <input
+          type="text"
+          name="name"
+          placeholder="Tu nombre"
+          class="w-full px-4 py-3 border-b-2 border-white rounded-md text-white focus:outline-none border-2 focus:border-[#BFAE99] placeholder-[#BFAE99]"
+          required
+        />
+        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-[#BFAE99]"
+          >*</span
+        >
+      </div>
+      <button
+        type="submit"
+        class="mt-8 px-6 py-3 bg-white text-[#2D2924] font-semibold rounded-lg shadow hover:bg-gray-200 transition cursor-pointer"
+        >¡Voy a asistir!</button
+      >
+    </form>
+    <p id="rsvp-message" class="mt-4 text-pink-400 font-semibold hidden">
+      ¡Gracias por confirmar tu asistencia!
+    </p>
+  </div>
+  <script type="module">
+    const form = document.getElementById("rsvp-form");
+    const message = document.getElementById("rsvp-message");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+
+      const res = await fetch("https://example.com/dummy-google-script", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({ name }),
+      });
+
+      const result = await res.json();
+      if (result.result === "Success") {
+        form.reset();
+        message.classList.remove("hidden");
+        message.textContent = `¡Gracias por confirmar tu asistencia, ${result.name}!`;
+      }
+    });
+  </script>
+</section>

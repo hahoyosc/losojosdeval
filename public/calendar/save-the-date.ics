@@ -1,0 +1,13 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//losojosdeval.com//SaveTheDate//ES
+BEGIN:VEVENT
+UID:20250802T200000Z@losojosdeval.com
+DTSTAMP:20250714T120000Z
+DTSTART:20250803T010000Z
+DTEND:20250803T050000Z
+SUMMARY:Cumpleaños de Val
+DESCRIPTION:Acompáñanos en esta gran celebración.
+LOCATION:Milán condominio 4, apto. 429, Envigado, Antioquia
+END:VEVENT
+END:VCALENDAR
