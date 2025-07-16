@@ -16,7 +16,7 @@
     <p class="text-xl mb-8">
       Ingresa tu nombre para confirmar que asistirás a esta gran celebración 🎉
     </p>
-    <form>
+    <form data-script-url={import.meta.env.PUBLIC_GOOGLE_SCRIPT_URL}>
       <div class="mb-4 relative">
         <input
           type="text"
@@ -31,35 +31,58 @@
       </div>
       <button
         type="submit"
-        class="mt-8 px-6 py-3 bg-white text-[#2D2924] font-semibold rounded-lg shadow hover:bg-gray-200 transition cursor-pointer"
+        class="my-4 px-6 py-3 bg-white text-[#2D2924] font-semibold rounded-lg shadow hover:bg-gray-200 transition cursor-pointer"
+        id="rsvp-submit"
         >¡Voy a asistir!</button
       >
+      <div id="rsvp-loader" class="hidden justify-center items-center mt-4">
+        <svg class="animate-spin h-6 w-6 text-[#BFAE99]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+        </svg>
+      </div>
     </form>
-    <p id="rsvp-message" class="mt-4 text-pink-400 font-semibold hidden">
+    <p id="rsvp-message" class="my-8 text-[#BFAE99] text-2xl font-semibold hidden">
       ¡Gracias por confirmar tu asistencia!
     </p>
   </div>
+  <script type="module" src="/scripts/gsap-rsvp.js"></script>
   <script type="module">
-    const form = document.getElementById("rsvp-form");
+    const form = document.querySelector("form");
     const message = document.getElementById("rsvp-message");
+    const loader = document.getElementById("rsvp-loader");
+    const submitBtn = document.getElementById("rsvp-submit");
+    const scriptUrl = form.getAttribute("data-script-url");
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const name = document.getElementById("name").value;
-
-      const res = await fetch("https://example.com/dummy-google-script", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({ name }),
-      });
-
-      const result = await res.json();
-      if (result.result === "Success") {
-        form.reset();
+      const name = form.elements["name"].value;
+      loader.classList.remove("hidden");
+      loader.classList.add("flex");
+      submitBtn.disabled = true;
+      submitBtn.classList.add("opacity-50", "cursor-not-allowed");
+      try {
+        const res = await fetch(scriptUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({ name }),
+        });
+        const result = await res.json();
+        if (result.result === "Success") {
+          form.reset();
+          message.classList.remove("hidden");
+          message.textContent = `¡Gracias por confirmar tu asistencia, ${result.name}!`;
+        }
+      } catch (err) {
         message.classList.remove("hidden");
-        message.textContent = `¡Gracias por confirmar tu asistencia, ${result.name}!`;
+        message.textContent = "Hubo un error. Intenta de nuevo.";
+      } finally {
+        loader.classList.add("hidden");
+        loader.classList.remove("flex");
+        submitBtn.disabled = false;
+        submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
       }
     });
   </script>
